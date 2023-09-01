@@ -2,8 +2,7 @@ from flask import jsonify
 import hashlib
 import secrets
 
-
-from dynamodb_manager import dynamodb_client
+from src.dynamodb_manager import dynamodb_client
 from src.jwt_utils import generate_jwt
 
 USERS_TABLE = 'users'

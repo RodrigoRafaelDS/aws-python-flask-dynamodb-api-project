@@ -39,6 +39,8 @@ def login():
 @app.route('/saveInfo', methods=['POST'])
 def save_info_endpoint():
     data = request.json
+    auth_header = request.headers.get('Authorization')
+
     email = data.get('email')
     name = data.get('name')
     address = data.get('address')
@@ -47,16 +49,19 @@ def save_info_endpoint():
     if not email or not name or not address or not phone:
         return jsonify({'error': 'Please provide all required fields'}), 400
 
-    auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
         return jsonify({'error': 'Authorization required'}), 401
 
     token = auth_header.split(' ')[1]
     decoded_token = validate_jwt(token)
-    token_email = decoded_token.get('email')
+
+    if not decoded_token or 'email' not in decoded_token:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    token_email = decoded_token['email']
 
     if not token_email or token_email != email:
-        return jsonify({'error': 'Invalid token'}), 401
+        return jsonify({'error': 'Invalid token (email)'}), 401
 
     result = save_info(email, name, address, phone)
     return result

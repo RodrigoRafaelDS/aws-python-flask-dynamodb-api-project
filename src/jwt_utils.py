@@ -16,7 +16,14 @@ def generate_jwt(email):
 def validate_jwt(token):
     try:
         decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        return decoded_token if decoded_token['exp'] >= datetime.datetime.utcnow() else False
+        exp_timestamp = decoded_token['exp']
+
+        exp_datetime = datetime.datetime.utcfromtimestamp(exp_timestamp)
+
+        if exp_datetime >= datetime.datetime.utcnow():
+            return decoded_token
+        else:
+            return False
     except jwt.ExpiredSignatureError:
         return False
     except jwt.InvalidTokenError:

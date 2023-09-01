@@ -1,6 +1,6 @@
 from flask import jsonify
 
-from dynamodb_manager import dynamodb_client
+from src.dynamodb_manager import dynamodb_client
 
 USERS_TABLE = 'InfoTable'
 
