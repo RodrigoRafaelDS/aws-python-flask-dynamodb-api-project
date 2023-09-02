@@ -23,8 +23,12 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ InfoTable, Arn ]
+
   environment:
     USERS_TABLE: ${self:custom.tableName}
+    INFOTABLE: ${self:custom.tableNameInfoTable}
+
 
 functions:
   api:
