@@ -1,7 +1,7 @@
 import hashlib
 import secrets
 
-from flask import jsonify
+from fastapi.responses import JSONResponse
 
 from src.dynamodb_manager import dynamodb_client
 from src.jwt_utils import generate_jwt
@@ -25,14 +25,14 @@ def create_user(email, password):
         Item={"email": {"S": email}, "password": {"S": hashed_password}, "salt": {"S": salt}},
     )
 
-    return jsonify({"email": email})
+    return JSONResponse({"email": email})
 
 
 def validate_login(email, password):
     response = dynamodb_client.get_item(TableName=USERS_TABLE, Key={"email": {"S": email}})
 
     if "Item" not in response:
-        return jsonify({"error": "User not exist"}), 401
+        return JSONResponse({"error": "User not exist"}), 401
 
     user_item = response["Item"]
     hashed_password = user_item["password"]["S"]
@@ -42,6 +42,6 @@ def validate_login(email, password):
 
     if hashed_password == input_hashed_password:
         token = generate_jwt(email)
-        return jsonify({"message": "Login successful", "token": token})
+        return JSONResponse({"message": "Login successful", "token": token})
 
-    return jsonify({"error": "Invalid username or password"}), 401
+    return JSONResponse({"error": "Invalid username or password"}), 401

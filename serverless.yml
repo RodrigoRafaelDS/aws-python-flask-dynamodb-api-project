@@ -1,11 +1,7 @@
-service: aws-python-flask-dynamodb-api-project
+service: api-project-v1
 
 frameworkVersion: '3'
 
-custom:
-  tableName: 'users-table-${sls:stage}'
-  wsgi:
-    app: app.app
 
 provider:
   name: aws
@@ -26,18 +22,17 @@ provider:
             - Fn::GetAtt: [ InfoTable, Arn ]
 
   environment:
-    USERS_TABLE: ${self:custom.tableName}
-    INFOTABLE: ${self:custom.tableNameInfoTable}
+    USERS_TABLE: 'users'
+    INFOTABLE: 'users-info'
 
 
 functions:
   api:
-    handler: wsgi_handler.handler
+    handler: src.app.handler
     events:
       - httpApi: '*'
 
 plugins:
-  - serverless-wsgi
   - serverless-python-requirements
   - serverless-dynamodb-local
 
@@ -55,7 +50,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: users
+        TableName: 'users'
 
     InfoTable:
       Type: AWS::DynamoDB::Table
@@ -69,4 +64,10 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: InfoTable
+        TableName: 'users-info'
+
+
+custom:
+    pythonRequirements:
+      useDownloadCache: true
+      useStaticCache: true

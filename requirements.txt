@@ -15,3 +15,8 @@ python-dateutil~=2.8.2
 urllib3~=1.26.16
 black~=21.9b0
 isort~=5.9.3
+
+pydantic~=2.3.0
+uvicorn~=0.23.2
+fastapi~=0.103.1
+mangum~=0.17.0
